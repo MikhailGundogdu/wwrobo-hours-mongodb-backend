@@ -1,7 +1,7 @@
 import { serve, env, file } from "bun";
 import { MongoClient } from "mongodb";
 
-import { process } from "./logging";
+import { process, processAdjustment } from "./logging";
 import {
   getEveryoneAggHrsForType,
   getMemberAggHrsForType,
@@ -186,8 +186,8 @@ serve({
     "/outreach/sessions": async (_) => {
       return Response.json(
         [
-          "Robocamp W1D1",
-          "Robocamp W1D2",
+          "Robocamp W1D3",
+          "Robocamp W1D3",
           "Robocamp W1D3",
           "Robocamp W1D4",
           "Robocamp W1D5",
@@ -213,7 +213,7 @@ serve({
           "Minibots Session 1",
           "LM3 Volunteering",
           "Minibots Session 2",
-          "LT Volunteering",
+          "Robocamp W1D3",
         ],
         {
           status: 200,
@@ -278,6 +278,71 @@ serve({
         const processed = await process(req, env.AUTH_KEY);
 
         console.log(processed);
+
+        if (processed.response) {
+          return processed.response;
+        }
+
+        try {
+          const result = await competition.insertOne(processed.log!);
+
+          return Response.json(
+            { created: true, insertedId: result.insertedId },
+            { status: 200, headers }
+          );
+        } catch (error) {
+          return Response.json({ message: error }, { status: 500, headers });
+        }
+      },
+    },
+
+    // MARK: - ADJUST Hours
+    //
+    "/practice/adjust/:id": {
+      POST: async (req) => {
+        const processed = await processAdjustment(req, env.AUTH_KEY);
+
+        if (processed.response) {
+          return processed.response;
+        }
+
+        try {
+          const result = await practice.insertOne(processed.log!);
+
+          return Response.json(
+            { created: true, insertedId: result.insertedId },
+            { status: 200, headers }
+          );
+        } catch (error) {
+          return Response.json({ message: error }, { status: 500, headers });
+        }
+      },
+    },
+
+    "/outreach/adjust/:id": {
+      POST: async (req) => {
+        const processed = await processAdjustment(req, env.AUTH_KEY);
+
+        if (processed.response) {
+          return processed.response;
+        }
+
+        try {
+          const result = await outreach.insertOne(processed.log!);
+
+          return Response.json(
+            { created: true, insertedId: result.insertedId },
+            { status: 200, headers }
+          );
+        } catch (error) {
+          return Response.json({ message: error }, { status: 500, headers });
+        }
+      },
+    },
+
+    "/competition/adjust/:id": {
+      POST: async (req) => {
+        const processed = await processAdjustment(req, env.AUTH_KEY);
 
         if (processed.response) {
           return processed.response;
