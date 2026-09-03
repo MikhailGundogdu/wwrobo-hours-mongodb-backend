@@ -186,9 +186,9 @@ serve({
     "/outreach/sessions": async (_) => {
       return Response.json(
         [
-          "Robocamp W1D3",
-          "Robocamp W1D3",
-          "Robocamp W1D3",
+          "Robocamp",
+          "Robocamp",
+          "Robocamp",
           "Robocamp W1D4",
           "Robocamp W1D5",
           "Robocamp W2D1",
@@ -213,7 +213,7 @@ serve({
           "Minibots Session 1",
           "LM3 Volunteering",
           "Minibots Session 2",
-          "Robocamp W1D3",
+          "Robocamp",
         ],
         {
           status: 200,

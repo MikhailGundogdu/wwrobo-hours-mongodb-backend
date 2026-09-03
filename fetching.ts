@@ -1,6 +1,12 @@
 import { Collection, type Document } from "mongodb";
 import type { BunRequest } from "bun";
 
+const SCHOOL_YEAR_START = 2026;
+
+function schoolYearForMonth(month: number): string {
+  return String(SCHOOL_YEAR_START + (month > 4 ? 1 : 0));
+}
+
 export async function getSessionIndvHrs(
   collection: Collection<Document>,
   req: BunRequest
@@ -84,9 +90,9 @@ export async function getMemberAggHrsForType(
 
   const params = new URLSearchParams(req.url.split("?")[1]);
   const month: number = parseInt(params.get("month") || "0");
-  const startYear = month <= 4 ? "2025" : "2026";
+  const startYear = schoolYearForMonth(month);
   const startMonth = `${month <= 4 ? month + 8 : month - 4}`.padStart(2, "0");
-  const endYear = month + 1 <= 4 ? "2025" : "2026";
+  const endYear = schoolYearForMonth(month + 1);
   const endMonth = `${month + 1 <= 4 ? month + 9 : month - 3}`.padStart(2, "0");
   const startDst = parseInt(startMonth) >= 4 && parseInt(startMonth) <= 11;
   const endDst = parseInt(endMonth) >= 4 && parseInt(endMonth) <= 11;
@@ -147,9 +153,9 @@ export async function getEveryoneAggHrsForType(
   const params = new URLSearchParams(req.url.split("?")[1]);
   const month: number = parseInt(params.get("month") || "0");
   const day: number = parseInt(params.get("day") || "0");
-  const startYear = month <= 4 ? "2025" : "2026";
+  const startYear = schoolYearForMonth(month);
   const startMonth = `${month <= 4 ? month + 8 : month - 4}`.padStart(2, "0");
-  const endYear = day == 0 ? (month + 1 <= 4 ? "2025" : "2026") : startYear
+  const endYear = day == 0 ? schoolYearForMonth(month + 1) : startYear
   const endMonth = day == 0 ? (`${month + 1 <= 4 ? month + 9 : month - 3}`.padStart(2, "0")) : startMonth;
   const startDst = day == 0 ? (parseInt(startMonth) >= 4 && parseInt(startMonth) <= 11) : (parseInt(startMonth) + day / 31 >= 3.29 && parseInt(startMonth) + day / 31 <= 11.07);
   const endDst = day == 0 ? (parseInt(endMonth) >= 4 && parseInt(endMonth) <= 11) : (parseInt(endMonth) + day / 31 >= 3.29 && parseInt(endMonth) + day / 31 <= 11.06);
