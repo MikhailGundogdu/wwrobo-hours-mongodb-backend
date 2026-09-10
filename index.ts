@@ -4,6 +4,7 @@ import { MongoClient } from "mongodb";
 import { process, processAdjustment } from "./logging";
 import {
   getEveryoneAggHrsForType,
+  getEveryoneIndvLogs,
   getMemberAggHrsForType,
   getSessionAggHrs,
   getSessionIndvHrs,
@@ -166,6 +167,41 @@ serve({
     "/competition/:session/individual/:id": async (req) => {
       try {
         return Response.json(await getSessionIndvHrs(competition, req), {
+          status: 200,
+          headers,
+        });
+      } catch (error) {
+        return Response.json({ message: error }, { status: 500, headers });
+      }
+    },
+
+    // MARK: - GET Everyone Individual Logs (raw, all sessions)
+    //
+    "/practice/logs": async (_) => {
+      try {
+        return Response.json(await getEveryoneIndvLogs(practice), {
+          status: 200,
+          headers,
+        });
+      } catch (error) {
+        return Response.json({ message: error }, { status: 500, headers });
+      }
+    },
+
+    "/outreach/logs": async (_) => {
+      try {
+        return Response.json(await getEveryoneIndvLogs(outreach), {
+          status: 200,
+          headers,
+        });
+      } catch (error) {
+        return Response.json({ message: error }, { status: 500, headers });
+      }
+    },
+
+    "/competition/logs": async (_) => {
+      try {
+        return Response.json(await getEveryoneIndvLogs(competition), {
           status: 200,
           headers,
         });

@@ -39,6 +39,26 @@ export async function getSessionIndvHrs(
   };
 }
 
+export async function getEveryoneIndvLogs(
+  collection: Collection<Document>
+): Promise<
+  {
+    id: string;
+    session: string;
+    minutes: number;
+    timestamp: string;
+  }[]
+> {
+  const logs = await collection.find({}).toArray();
+
+  return logs.map((log) => ({
+    id: log.id,
+    session: log.session,
+    minutes: log.minutes,
+    timestamp: new Date(log.timestamp).toISOString(),
+  }));
+}
+
 export async function getSessionAggHrs(
   collection: Collection<Document>,
   req: BunRequest
